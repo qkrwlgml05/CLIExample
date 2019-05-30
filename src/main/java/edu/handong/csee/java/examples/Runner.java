@@ -6,12 +6,14 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import java.io.File;
 
 public class Runner {
 	
 	String path;
 	boolean verbose;
 	boolean help;
+	boolean full;
 
 	public static void main(String[] args) {
 
@@ -33,11 +35,18 @@ public class Runner {
 			System.out.println("You provided \"" + path + "\" as the value of the option p");
 			
 			// TODO show the number of files in the path
+			File fl = new File(path);
+			System.out.println(fl.listFiles().length);
 			
 			if(verbose) {
 				
 				// TODO list all files in the path
-				
+				for (File file : fl.listFiles()) {
+					if (file.isFile())
+						System.out.println(file.getName());
+					if (file.isDirectory())
+						System.out.println(file.getAbsolutePath());
+				}
 				System.out.println("Your program is terminated. (This message is shown because you turned on -v option!");
 			}
 		}
@@ -53,6 +62,7 @@ public class Runner {
 			path = cmd.getOptionValue("p");
 			verbose = cmd.hasOption("v");
 			help = cmd.hasOption("h");
+			full = cmd.hasOption("f");
 
 		} catch (Exception e) {
 			printHelp(options);
@@ -86,6 +96,10 @@ public class Runner {
 		options.addOption(Option.builder("h").longOpt("help")
 		        .desc("Help")
 		        .build());
+		
+		options.addOption(Option.builder("f").longOpt("fullpath")
+				.desc("Print out full path of the files in the directory")
+				.build());
 
 		return options;
 	}
